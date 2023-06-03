@@ -1,0 +1,102 @@
+/*body {*/
+/*    font-family: Arial, Helvetica, sans-serif;*/
+/*}*/
+
+/** {*/
+/*    box-sizing: border-box;*/
+/*}*/
+
+/*!* Add padding to containers *!*/
+/*.container {*/
+/*    margin: 10% 40%;*/
+/*    background-color: white;*/
+/*}*/
+
+/*.title {*/
+/*    text-align: center;*/
+/*}*/
+
+/*!* Full-width input fields *!*/
+/*input {*/
+/*    width: 100%;*/
+/*    padding: 15px;*/
+/*    margin: 5px 0 22px 0;*/
+/*    display: inline-block;*/
+/*    border: none;*/
+/*    background: #f1f1f1;*/
+/*}*/
+
+/*input:focus {*/
+/*    background-color: #ddd;*/
+/*    outline: none;*/
+/*}*/
+
+/*!* Overwrite default styles of hr *!*/
+/*hr {*/
+/*    border: 1px solid #f1f1f1;*/
+/*    margin-bottom: 25px;*/
+/*}*/
+
+/*!* Set a style for the submit button *!*/
+/*.registerbtn {*/
+/*    background-color: #4CAF50;*/
+/*    color: white;*/
+/*    padding: 16px 20px;*/
+/*    margin: 8px 0;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    width: 100%;*/
+/*    opacity: 0.9;*/
+/*}*/
+
+/*.registerbtn:hover {*/
+/*    opacity: 1;*/
+/*}*/
+
+/*!* Add a blue text color to links *!*/
+/*a {*/
+/*    color: dodgerblue;*/
+/*}*/
+
+/*!* Set a grey background color and center the text of the "sign in" section *!*/
+/*.signin {*/
+/*    text-align: center;*/
+/*}*/
+
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+.h-custom {
+    height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+    .h-custom {
+        height: 100%;
+    }
+}
+
+.button-new {
+    background: linear-gradient(
+            135deg
+            , #753370 0%, #298096 100%);
+    padding: 15px;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: 400;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    width:100%;
+    letter-spacing: .11rem;
+    outline:none;
+}
+
+.button-new:hover
+{
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 3px 3px 6px #38373785;
+}
