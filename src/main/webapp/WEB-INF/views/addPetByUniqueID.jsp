@@ -4,20 +4,27 @@
 <html>
 <head>
     <title>Головна</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-            crossorigin="anonymous">
-    </script>
+    <link href="<c:url value="../../resources/css/addPetByUniqueId.css"/>" rel="stylesheet" type="text/css">
 </head>
 <body>
 <jsp:include page="../views/header.jsp"/>
-<nav class="navbar navbar-light bg-light">
-    <form class="form-inline" method="POST" class="example" action="${pageContext.request.contextPath}/pet/byUniqueID">
-        <input class="form-control mr-sm-2" type="search" placeholder="Пошук..." aria-label="Search" id="uniqueID" name="uniqueID">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Знайти</button>
+
+<div class="my-container">
+    <form class="search-bar" method="POST" action="${pageContext.request.contextPath}/pet/byUniqueID">
+        <input type="text" placeholder="Пошук..." name="uniqueID" id="uniqueID">
+        <button type="submit">
+            <img src="../../resources/images/search.png">
+        </button>
     </form>
-</nav>
+</div>
+<%--<form class="input-group" method="POST" action="${pageContext.request.contextPath}/pet/byUniqueID">--%>
+<%--    <input type="search" class="form-control rounded" id="uniqueID" name="uniqueID" placeholder="Пошук..." aria-label="Search" aria-describedby="search-addon" />--%>
+<%--    <button type="submit" class="btn btn-outline-primary">search</button>--%>
+<%--</form>--%>
+<%--<form class="search-container" method="POST" action="${pageContext.request.contextPath}/pet/byUniqueID">--%>
+<%--    <input type="search" id="uniqueID" name="uniqueID" placeholder="Пошук..." required>--%>
+<%--    <button type="submit">Знайти</button>--%>
+<%--</form>--%>
 </body>
 </html>
 <jsp:include page="../views/footer.jsp"/>

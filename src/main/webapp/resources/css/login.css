@@ -80,9 +80,7 @@
 }
 
 .button-new {
-    background: linear-gradient(
-            135deg
-            , #753370 0%, #298096 100%);
+    background: linear-gradient(135deg, #1985a1, #847577);
     padding: 15px;
     border: none;
     border-radius: 50px;

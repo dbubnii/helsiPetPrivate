@@ -16,102 +16,149 @@
     <script
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js">
     </script>
-    <link href="<c:url value="../../resources/css/cards.css"/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value="../../resources/css/myRequest.css"/>" rel="stylesheet" type="text/css">
 </head>
 <body>
 <jsp:include page="../views/header.jsp"/>
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">ПІБ Ветеринара</th>
-        <th scope="col">ПІБ Власника</th>
-        <th scope="col">Кличка тарини</th>
-        <th scope="col">Вибрана дата запису</th>
-        <th scope="col">Деталі</th>
-        <th scope="col">Статус запису</th>
-        <th scope="col"></th>
-    </tr>
-    </thead>
-    <c:forEach items="${appointments}" var="appointment">
-        <tbody>
+<div class="table-wrapper">
+    <table class="fl-table">
+        <thead>
         <tr>
-            <th class="counterCell" scope="row"></th>
-            <td>${appointment.vet.firstName} ${appointment.vet.lastName}</td>
-            <td>${appointment.owner.firstName} ${appointment.owner.lastName}</td>
-            <td>${appointment.animal.name}</td>
-            <td>${appointment.vetAvailableDate}</td>
-            <td>${appointment.details}</td>
-            <td>${appointment.status}</td>
-            <c:if test="${userType == 'ВЛАСНИК'}">
-                <c:if test="${appointment.receiptId != null}">
-                    <td>
-                        <div class="row">
-                            <form action="${pageContext.request.contextPath}/receipt/get/${appointment.receiptId}">
-                                <button class="btn btn-primary" type="submit">Переглянути рецепт</button>
-                            </form>
-                        </div>
-                    </td>
-                </c:if>
-            </c:if>
-            <c:if test="${userType == 'ВЕТЕРИНАР'}">
-                <c:if test="${appointment.status == 'ОЧІКУЄТЬСЯ'}">
-                    <td>
-                        <div class="row">
-                            <button type="button" class="btn btn-primary" onclick="confirmRequest(${appointment.id})">
-                                Підтвердити запис
-                            </button>
-                            <button type="button" class="btn btn-primary" onclick="rejectRequest(${appointment.id})">
-                                Відмінити запис
-                            </button>
-                        </div>
-                    </td>
-                </c:if>
-                <c:if test="${appointment.status == 'ПІДТВЕРДЖЕНО'}">
-                    <td>
-                        <div class="row">
-                            <button type="button" class="btn btn-primary" onclick="completeRequest(${appointment.id})">
-                                Позначити як виконане
-                            </button>
-                        </div>
-                    </td>
-                </c:if>
-                <c:if test="${appointment.status == 'ВИКОНАНО'}">
-                    <c:if test="${appointment.receiptId == null}">
-                        <td>
-                            <div class="row">
-                                <form action="${pageContext.request.contextPath}/receipt/${appointment.id}">
-                                    <button class="btn btn-primary" type="submit">Додати рецепт</button>
-                                </form>
-                            </div>
-                        </td>
-                    </c:if>
+            <th scope="col">#</th>
+            <th scope="col">ПІБ Ветеринара</th>
+            <th scope="col">ПІБ Власника</th>
+            <th scope="col">Кличка тарини</th>
+            <th scope="col">Вибрана дата запису</th>
+            <th scope="col">Деталі</th>
+            <th scope="col">Статус запису</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <c:forEach items="${appointments}" var="appointment">
+            <tbody>
+            <tr>
+                <th class="counterCell" scope="row"></th>
+                <td>${appointment.vet.firstName} ${appointment.vet.lastName}</td>
+                <td>${appointment.owner.firstName} ${appointment.owner.lastName}</td>
+                <td>${appointment.animal.name}</td>
+                <td>${appointment.vetAvailableDate}</td>
+                <td>${appointment.details}</td>
+                <td>${appointment.status}</td>
+                <c:if test="${userType == 'ВЛАСНИК'}">
                     <c:if test="${appointment.receiptId != null}">
                         <td>
                             <div class="row">
                                 <form action="${pageContext.request.contextPath}/receipt/get/${appointment.receiptId}">
-                                    <button class="btn btn-primary" type="submit">Переглянути рецепт</button>
+                                    <button class="btn" style="background-color:#1985a1; color:white;" type="submit">
+                                        Переглянути рецепт
+                                    </button>
                                 </form>
                             </div>
                         </td>
                     </c:if>
                 </c:if>
-            </c:if>
-        </tr>
-        </tbody>
-    </c:forEach>
-</table>
+                <c:if test="${userType == 'ВЕТЕРИНАР'}">
+                    <c:if test="${appointment.status == 'ОЧІКУЄТЬСЯ'}">
+                        <td>
+                            <div class="row">
+                                <div class="column">
+                                    <button type="button" class="btn btn-info" style="margin-right: 10px"
+                                            onclick="confirmRequest(${appointment.id}, '${appointment.owner.usersUsername}')">
+                                        Підтвердити запис
+                                    </button>
+                                </div>
+                                <div class="column">
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="rejectRequest(${appointment.id}, '${appointment.owner.usersUsername}')">
+                                        Відмінити запис
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+
+                    </c:if>
+                    <c:if test="${appointment.status == 'ПІДТВЕРДЖЕНО'}">
+                        <td>
+                            <div class="row">
+                                <div class="column">
+                                    <form action="${pageContext.request.contextPath}/pet/profile/byName/${appointment.animal.name}/${appointment.owner.usersUsername}">
+                                        <button class="btn" type="submit"
+                                                style="background-color:#1985a1; color:white; margin-right: 10px">
+                                            Переглянути профіль тварини
+                                        </button>
+                                    </form>
+                                </div>
+                                <br>
+                                <div class="column">
+                                    <button type="button" class="btn btn-info"
+                                            onclick="completeRequest(${appointment.id}, '${appointment.owner.usersUsername}', '${appointment.vet.usersUsername}', '${appointment.animal.name}')">
+                                        Позначити як виконане
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </c:if>
+                    <c:if test="${appointment.status == 'ВИКОНАНО'}">
+                        <c:if test="${appointment.receiptId == null}">
+                            <td>
+                                <div class="row">
+                                    <div class="column">
+                                        <form action="${pageContext.request.contextPath}/pet/profile/byName/${appointment.animal.name}/${appointment.owner.usersUsername}">
+                                            <button class="btn"
+                                                    style="margin-right: 10px; background-color:#1985a1; color:white"
+                                                    type="submit">
+                                                Переглянути профіль тварини
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="column">
+                                        <form action="${pageContext.request.contextPath}/receipt/${appointment.id}">
+                                            <button class="btn btn-info" type="submit">Додати рецепт</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </c:if>
+                        <c:if test="${appointment.receiptId != null}">
+                            <td>
+                                <div class="row">
+                                    <div class="column">
+                                        <form action="${pageContext.request.contextPath}/pet/profile/byName/${appointment.animal.name}/${appointment.owner.usersUsername}">
+                                            <button class="btn" type="submit" style="background-color:#1985a1; color:white; margin-right: 10px">
+                                                Переглянути профіль тварини
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="column">
+                                        <form action="${pageContext.request.contextPath}/receipt/get/${appointment.receiptId}">
+                                            <button class="btn btn-info" type="submit">Переглянути рецепт</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </c:if>
+                    </c:if>
+                </c:if>
+            </tr>
+            <tr style="border-bottom:1px solid black">
+                <td colspan="100%"></td>
+            </tr>
+            </tbody>
+        </c:forEach>
+    </table>
+</div>
 </body>
 </html>
 <jsp:include page="../views/footer.jsp"/>
 
 <script>
-    function confirmRequest(requestId) {
+    function confirmRequest(requestId, ownerUsername) {
         $.ajax({
             type: "POST",
             async: false,
             url: "/request/confirm",
             data: {
+                ownerUsername: ownerUsername,
                 requestId: requestId
             }
         }).done(function () {
@@ -121,12 +168,13 @@
         });
     }
 
-    function rejectRequest(requestId) {
+    function rejectRequest(requestId, ownerUsername) {
         $.ajax({
             type: "POST",
             async: false,
             url: "/request/reject",
             data: {
+                ownerUsername: ownerUsername,
                 requestId: requestId
             }
         }).done(function () {
@@ -136,12 +184,15 @@
         });
     }
 
-    function completeRequest(requestId) {
+    function completeRequest(requestId, ownerUsername, vetUsername, petName) {
         $.ajax({
             type: "POST",
             async: false,
             url: "/request/complete",
             data: {
+                ownerUsername: ownerUsername,
+                vetUsername: vetUsername,
+                petName: petName,
                 requestId: requestId
             }
         }).done(function () {

@@ -1,9 +1,12 @@
 package ua.zorii.helsiPet.repository.impl;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.zorii.helsiPet.entity.Animal;
+import ua.zorii.helsiPet.entity.Vaccine;
 import ua.zorii.helsiPet.mappers.PetRowMapper;
 import ua.zorii.helsiPet.repository.PetRepository;
 
@@ -29,12 +32,6 @@ public class PetRepositoryImpl implements PetRepository {
         String queryToGetPetById = "SELECT id, name, breed, sex, age, size, weight, type, photo, details, sterilized," +
                 "owner_username, vet_id, uniqueID FROM animals WHERE id = ?";
         return jdbcTemplate.queryForObject(queryToGetPetById, new PetRowMapper(), id);
-    }
-
-    @Override
-    public List<Animal> getAllPetsByVetId(Integer id) {
-        String queryToGetAllPetsByVetId = "SELECT * FROM animals WHERE vet_id = ?";
-        return jdbcTemplate.query(queryToGetAllPetsByVetId, new PetRowMapper(), id);
     }
 
     @Override
@@ -68,5 +65,37 @@ public class PetRepositoryImpl implements PetRepository {
     public void assignPetToOwner(String ownerUsername, Integer petId) {
         String queryToAssignPetToOwner = "UPDATE animals SET owner_username = ? WHERE id = ?";
         jdbcTemplate.update(queryToAssignPetToOwner, ownerUsername, petId);
+    }
+
+    @Override
+    public void updateVaccineForPet(String petName, Vaccine vaccine) {
+        if (checkTableNotEmpty(petName) == 0) {
+            String queryToInsert = "INSERT INTO vaccination(purpose, vaccineName, expiration," +
+                    "vaccineDoze, uuid, petName) VALUES(?,?,?,?,?,?)";
+            jdbcTemplate.update(queryToInsert, vaccine.getPurpose(), vaccine.getVaccineName(), vaccine.getExpiration(),
+                    vaccine.getVaccineDoze(), vaccine.getUuid(), petName);
+        } else {
+            String queryToUpdate = "UPDATE vaccination SET purpose = ?, vaccineName = ?, expiration = ?, " +
+                    " vaccineDoze = ?, uuid = ? WHERE petName = ?";
+            jdbcTemplate.update(queryToUpdate, vaccine.getPurpose(), vaccine.getVaccineName(), vaccine.getExpiration(),
+                    vaccine.getVaccineDoze(), vaccine.getUuid(), petName);
+        }
+    }
+
+    @Override
+    public Vaccine getVaccineForPet(String petName) {
+        String queryToGetVaccine = "SELECT * FROM vaccination WHERE petName = ?";
+        Vaccine vaccine;
+        try {
+            vaccine = jdbcTemplate.queryForObject(queryToGetVaccine, new BeanPropertyRowMapper<>(Vaccine.class), petName);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        return vaccine;
+    }
+
+    private Integer checkTableNotEmpty(String petName) {
+        String query = "SELECT COUNT(*) FROM vaccination WHERE petName = ?";
+        return jdbcTemplate.queryForObject(query, new Object[]{petName}, Integer.class);
     }
 }

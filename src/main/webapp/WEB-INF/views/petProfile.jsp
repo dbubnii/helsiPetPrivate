@@ -8,7 +8,7 @@
 <body style="background-color: #E0FFFF">
 <jsp:include page="../views/header.jsp"/>
 <div class="container rounded bg-white mt-5 mb-5">
-    <div class="row">
+    <div class="row" style="border:1px solid black;">
         <div class="col-md-3 border-right">
             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                 <c:if test="${petInfo.photo != null}">
@@ -20,13 +20,23 @@
                 </c:if>
                 <span class="font-weight-bold">${petInfo.name}</span>
                 <span class="text-black-50">${petInfo.age} роки</span>
-                <span> </span>
+                <form style="margin-top: 20px"
+                      action="${pageContext.request.contextPath}/pet/history/pdf/${petInfo.ownerUsername}/${petInfo.name}">
+                    <button class="btn" style="background-color: #8b8c89; color: white" type="submit">Історія хворіб (PDF)</button>
+                </form>
+                <c:if test="${sessionScope.userType == 'ВЛАСНИК'}">
+                    <form action="${pageContext.request.contextPath}/pet/appointment">
+                        <button class="btn" style="background-color: #6096ba; color: white" type="submit">Записатись на прийом</button>
+                    </form>
+                </c:if>
             </div>
         </div>
         <div class="col-md-5 border-right">
             <div class="p-3 py-5">
                 <div class="d-flex justify-content-between align-items-center mb-3"><h4 class="text-right">Налаштування
-                    Профілю</h4></div>
+                    Профілю</h4>
+                </div>
+                <hr>
                 <div class="row mt-2">
                     <c:if test="${petInfo.ownerUsername != null}">
                         <div class="col-md-6">
@@ -78,10 +88,10 @@
                         </label>
                     </div>
                 </div>
-
+                <hr>
                 <c:if test="${petInfo.ownerUsername != null}">
                     <div class="mt-5 text-center">
-                        <button class="btn btn-primary profile-button" type="button">Зберегти зміни</button>
+                        <button class="btn profile-button" style="background-color: #1985a1; color: white;" type="button">Зберегти зміни</button>
                     </div>
                 </c:if>
                 <c:if test="${petInfo.ownerUsername == null}">
@@ -93,21 +103,80 @@
                 </c:if>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="p-3 py-5">
-                <br>
-                <div class="col-md-12">
-                    <div class="col-md-12">
-                        <form action="${pageContext.request.contextPath}/pet/history/pdf/${petInfo.id}">
-                            <button type="submit" style="color: darkred;">Історія хворіб (PDF)</button>
-                        </form>
-                    </div>
-                    <br>
-                    <div class="col-md-12">
-                        <form action="${pageContext.request.contextPath}/pet/appointment">
-                            <button type="submit" style="color: #4CAF50">Записатись на прийом</button>
-                        </form>
-                    </div>
+                <div class="align-items-center">
+                    <h4 class="text-right">Вакцинації
+                        <hr>
+                    </h4>
+                    <c:if test="${sessionScope.userType == 'ВЕТЕРИНАР'}">
+                        <div class="row mt-3">
+                            <form id="formId" method="POST" action="${pageContext.request.contextPath}/"
+                                  onsubmit="return editVaccination()">
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Призначення
+                                        <input type="text" class="form-control" id="purpose" name="purpose"
+                                               value="${vaccine != null ? vaccine.purpose : ''}">
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Назва препарату
+                                        <input type="text" class="form-control" id="vaccineName" name="vaccineName"
+                                               value="${vaccine != null ? vaccine.vaccineName : ''}">
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Термін придатності
+                                        <input type="text" class="form-control" id="expiration" name="expiration"
+                                               value="${vaccine != null ? vaccine.expiration : ''}">
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Доза
+                                        <input type="text" class="form-control" id="vaccineDoze" name="vaccineDoze"
+                                               value="${vaccine != null ? vaccine.vaccineDoze : ''}">
+                                    </label>
+                                </div>
+                                <input type="hidden" id="petName" name="petName" value="${petInfo.name}"/>
+                                <div class="mt-5 text-center">
+                                    <button class="btn profile-button" style="background-color: #1985a1; color: white" type="submit">Добавити/Змінити
+                                        Вакцинацію
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </c:if>
+                    <c:if test="${sessionScope.userType == 'ВЛАСНИК'}">
+                        <c:if test="${vaccine != null}">
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Призначення
+                                        <input type="text" class="form-control" value="${vaccine.purpose}" readonly>
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Назва препарату
+                                        <input type="text" class="form-control" value="${vaccine.vaccineName}" readonly>
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Термін придатності
+                                        <input type="text" class="form-control" value="${vaccine.expiration}" readonly>
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Серія
+                                        <input type="text" class="form-control" value="${vaccine.uuid}" readonly>
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="labels" style="font-size: 20px">Доза
+                                        <input type="text" class="form-control" value="${vaccine.vaccineDoze}" readonly>
+                                    </label>
+                                </div>
+                            </div>
+                        </c:if>
+                    </c:if>
                 </div>
             </div>
         </div>
@@ -128,6 +197,31 @@
             }
         }).done(function () {
             alert("Запит успішно опрацьовано!");
+        }).fail(function () {
+            alert("Щось пішло не так!");
+        });
+    }
+
+    function editVaccination() {
+        const purpose = document.getElementById("purpose").value;
+        const vaccineName = document.getElementById("vaccineName").value;
+        const expiration = document.getElementById("expiration").value;
+        const vaccineDoze = document.getElementById("vaccineDoze").value;
+        const petName = document.getElementById("petName").value;
+
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: "/pet/editVaccination",
+            data: {
+                purpose: purpose,
+                vaccineName: vaccineName,
+                vaccineDoze: vaccineDoze,
+                expiration: expiration,
+                petName: petName
+            }
+        }).done(function () {
+            alert("Дані успішно змінено!");
         }).fail(function () {
             alert("Щось пішло не так!");
         });

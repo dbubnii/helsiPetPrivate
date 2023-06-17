@@ -12,13 +12,13 @@
     <link href="<c:url value="../../resources/css/login.css"/>" rel="stylesheet" type="text/css">
 
 </head>
-<body style="background-color: #E0FFFF">
+<body style="background-color: white">
 <jsp:include page="../views/header.jsp"/>
 <section class="vh-100">
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-md-9 col-lg-6 col-xl-5">
-                <img style="border-radius: 50%;" src="../../resources/images/photo_1.jpg"
+                <img style="width: 1000px; height: 500px" src="../../resources/images/img_4.png"
                      class="img-fluid" alt="Sample image">
             </div>
             <div style="margin-top: 5rem" class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
@@ -30,14 +30,15 @@
                         <label> ПІБ Ветеринара
                             <input type="text" class="form-control form-control-lg"
                                    value="${vet.firstName} ${vet.lastName}" readonly/>
-                            <input type="hidden" id="vetUsername" name="vetUsername" value="${vet.usersUsername}" />
+                            <input type="hidden" id="vetUsername" name="vetUsername" value="${vet.usersUsername}"/>
                         </label>
                     </div>
                     <div class="form-outline mb-4">
                         <label> ПІБ Власника
                             <input type="text" class="form-control form-control-lg"
                                    value="${owner.firstName} ${owner.lastName}" readonly/>
-                            <input type="hidden" id="ownerUsername" name="ownerUsername" value="${owner.usersUsername}" />
+                            <input type="hidden" id="ownerUsername" name="ownerUsername"
+                                   value="${owner.usersUsername}"/>
                         </label>
                     </div>
                     <div class="form-outline mb-4">
@@ -62,7 +63,8 @@
                     </div>
                     <div class="form-outline mb-4">
                         <label for="details">Вкажіть деталі запису</label>
-                        <input style="height:200px;" type="text" id="details" name="details" class="form-control form-control-lg" required/>
+                        <input type="text" id="details" name="details"
+                               class="form-control form-control-lg" required/>
                     </div>
 
                     <div class="text-center text-lg-start mt-4 pt-2">

@@ -22,6 +22,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Appointment getAppointmentById(Integer id) {
+        return appointmentRepository.getAppointmentById(id);
+    }
+
+    @Override
     public List<Appointment> getAppointmentsByOwnerUsername(String ownerUsername) {
         return appointmentRepository.getAppointmentsByOwnerUsername(ownerUsername);
     }

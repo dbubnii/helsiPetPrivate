@@ -2,6 +2,8 @@ package ua.zorii.helsiPet.controller;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import ua.zorii.helsiPet.entity.Event;
 import ua.zorii.helsiPet.service.EventService;
+import ua.zorii.helsiPet.util.MailUtil;
 
 import java.time.LocalDateTime;
+
+import static org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes;
 
 @RestController
 @RequestMapping("/api")
@@ -93,6 +99,5 @@ public class EventController {
         public Long id;
         public String color;
     }
-
 
 }

@@ -1,5 +1,6 @@
 package ua.zorii.helsiPet.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import ua.zorii.helsiPet.enums.RequestStatus;
 import ua.zorii.helsiPet.service.AppointmentService;
 import ua.zorii.helsiPet.service.PetService;
 import ua.zorii.helsiPet.service.UserService;
+import ua.zorii.helsiPet.util.MailUtil;
 
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class AppointmentController {
                               @RequestParam String ownerUsername,
                               @RequestParam String ownerPetName,
                               @RequestParam String vetAvailableDate,
-                              @RequestParam String details) {
+                              @RequestParam String details, HttpServletRequest request) {
         final Appointment appointment = Appointment.builder()
                 .vetUsername(vetUsername)
                 .ownerUsername(ownerUsername)
@@ -67,6 +69,27 @@ public class AppointmentController {
                 .details(details)
                 .build();
         appointmentService.saveAppointmentToDB(appointment, RequestStatus.ОЧІКУЄТЬСЯ);
+        final Owner ownerInfo = userService.getOwnerInfo(ownerUsername);
+        final Vet vetInfo = userService.getVetInfo(vetUsername);
+        sendEmail(ownerInfo.getEmail(), vetInfo.getFirstName() + " " + vetInfo.getLastName(),
+                getSiteURL(request));
         return "redirect:/";
+    }
+
+    private void sendEmail(String email, String vetFullName, String siteUrl) {
+        String subject = "Запис на прийом";
+        String content = """
+                Вітаю! Ви успішно створили запис на прийом до лікаря %s!
+                Ви можете переглянути його статус тут: %s
+                """;
+        String url = siteUrl + "/request";
+        final String contentFormatted = String.format(content, vetFullName, url);
+
+        MailUtil.initializeMessage(email, subject, contentFormatted);
+    }
+
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
     }
 }

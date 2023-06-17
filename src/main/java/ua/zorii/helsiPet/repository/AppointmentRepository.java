@@ -12,5 +12,6 @@ public interface AppointmentRepository {
     void updateAppointmentStatus(Integer id, RequestStatus requestStatus);
     void removeAppointment(Integer id);
     void updateAppointment(Integer appointmentId, Integer receiptId);
+    Appointment getAppointmentById(Integer id);
 
 }

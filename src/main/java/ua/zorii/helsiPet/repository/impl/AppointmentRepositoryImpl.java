@@ -54,4 +54,10 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
         String queryToAddReceipt = "UPDATE appointment_forms SET receipt_id = ? WHERE id = ?";
         jdbcTemplate.update(queryToAddReceipt, receiptId, appointmentId);
     }
+
+    @Override
+    public Appointment getAppointmentById(Integer id) {
+        String queryToGetAppointmentByID = "SELECT * FROM appointment_forms WHERE id = ?";
+        return jdbcTemplate.queryForObject(queryToGetAppointmentByID, new BeanPropertyRowMapper<>(Appointment.class), id);
+    }
 }

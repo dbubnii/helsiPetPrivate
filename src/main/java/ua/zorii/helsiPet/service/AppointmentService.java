@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface AppointmentService {
     void saveAppointmentToDB(Appointment appointment, RequestStatus requestStatus);
+    Appointment getAppointmentById(Integer id);
     List<Appointment> getAppointmentsByOwnerUsername(String ownerUsername);
     List<Appointment> getAppointmentsByVetUsername(String vetUsername);
     void updateAppointmentStatus(Integer id, RequestStatus requestStatus);

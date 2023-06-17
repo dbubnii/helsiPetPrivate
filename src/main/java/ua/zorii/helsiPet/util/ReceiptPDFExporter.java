@@ -14,93 +14,45 @@ import jakarta.servlet.http.HttpServletResponse;
 import ua.zorii.helsiPet.entity.Animal;
 import ua.zorii.helsiPet.entity.Receipt;
 
+import javax.print.Doc;
 import java.awt.*;
 import java.io.IOException;
 
 public class ReceiptPDFExporter {
-    private Receipt receipt;
+    private final Receipt receipt;
 
     public ReceiptPDFExporter(Receipt receipt) {
         this.receipt = receipt;
     }
 
-    private void writeTableHeader(PdfPTable table) {
-        PdfPCell cell = new PdfPCell();
-        cell.setBackgroundColor(Color.BLUE);
-        cell.setPadding(5);
-
-        com.lowagie.text.Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
-        font.setColor(Color.WHITE);
-
-        cell.setPhrase(new Phrase("Receipt ID", font));
-
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Vet Full Name", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Owner Full Name", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Drug Name", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Drug Count", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Date Start", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Date End", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Clinic name", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Details", font));
-        table.addCell(cell);
-    }
-
-    private void writeTableData(PdfPTable table) {
-        FontFactory.register("c:\\windows\\fonts\\arial.ttf");
-        com.lowagie.text.Font font = FontFactory.getFont("arial",  "windows-1251");
-
-        table.addCell(new Phrase(String.valueOf(receipt.getId()), font));
-        table.addCell(new Phrase(receipt.getVetFullName(), font));
-        table.addCell(new Phrase(receipt.getOwnerFullName(), font));
-        table.addCell(new Phrase(receipt.getDrugName(), font));
-        table.addCell(new Phrase(receipt.getDrugCount(), font));
-        table.addCell(new Phrase(receipt.getDateStart(), font));
-        table.addCell(new Phrase(receipt.getDateEnd(), font));
-        table.addCell(new Phrase(receipt.getClinicName(), font));
-        table.addCell(new Phrase(receipt.getDetails(), font));
-
-    }
-
-    public void export(HttpServletResponse response) throws DocumentException, IOException {
-        Document document = new Document(PageSize.A2);
-        PdfWriter.getInstance(document, response.getOutputStream());
-
-        document.open();
+    private void writeTextData(Document document) {
         FontFactory.register("c:\\windows\\fonts\\arial.ttf");
         Font font = FontFactory.getFont("arial",  "windows-1251");
-        font.setSize(18);
+        font.setSize(14);
         font.setColor(Color.BLACK);
 
         Paragraph p = new Paragraph("Електронний Рецепт", font);
         p.setAlignment(Paragraph.ALIGN_CENTER);
-
         document.add(p);
 
-        PdfPTable table = new PdfPTable(9);
-        table.setWidthPercentage(100f);
-        table.setWidths(new float[]{1.5f, 3.5f, 3.0f, 3.0f, 1.5f, 3.5f, 3.0f, 1.5f, 3.0f});
-        table.setSpacingBefore(10);
+        document.add(new Paragraph("Ідентифікатор рецепту: " + receipt.getId(), font));
+        document.add(new Paragraph("ПІБ Ветеринара: " + receipt.getVetFullName(), font));
+        document.add(new Paragraph("ПІБ Власника: " + receipt.getOwnerFullName(), font));
+        document.add(new Paragraph("Призначенні ліки: " + receipt.getDrugName(), font));
+        document.add(new Paragraph("Рекомендації щодо прийому ліків: " + receipt.getDrugCount(), font));
+        document.add(new Paragraph("Дата початку дії рецепта: " + receipt.getDateStart(), font));
+        document.add(new Paragraph("Дата кінця дії рецепта: " + receipt.getDateEnd(), font));
+        document.add(new Paragraph("Назва клініки: " + receipt.getClinicName(), font));
+        document.add(new Paragraph("Деталі рецепту: " + receipt.getDetails(), font));
+    }
 
-        writeTableHeader(table);
-        writeTableData(table);
+    public void export(HttpServletResponse response) throws DocumentException, IOException {
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, response.getOutputStream());
 
-        document.add(table);
+        document.open();
+
+        writeTextData(document);
 
         document.close();
 

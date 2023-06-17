@@ -2,6 +2,7 @@ package ua.zorii.helsiPet.service.impl;
 
 import org.springframework.stereotype.Service;
 import ua.zorii.helsiPet.entity.Animal;
+import ua.zorii.helsiPet.entity.Vaccine;
 import ua.zorii.helsiPet.repository.PetRepository;
 import ua.zorii.helsiPet.service.PetService;
 
@@ -26,11 +27,6 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Animal> getAllPetsByVetId(Integer id) {
-        return petRepository.getAllPetsByVetId(id);
-    }
-
-    @Override
     public Animal getPetByName(String name) {
         return petRepository.getPetByName(name);
     }
@@ -48,6 +44,16 @@ public class PetServiceImpl implements PetService {
     @Override
     public void assignPetToOwner(String ownerUsername, Integer petId) {
         petRepository.assignPetToOwner(ownerUsername, petId);
+    }
+
+    @Override
+    public void updateVaccineForPet(String petName, Vaccine vaccine) {
+        petRepository.updateVaccineForPet(petName, vaccine);
+    }
+
+    @Override
+    public Vaccine getVaccineForPet(String petName) {
+        return petRepository.getVaccineForPet(petName);
     }
 
 }

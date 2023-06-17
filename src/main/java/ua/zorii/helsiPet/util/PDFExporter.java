@@ -6,60 +6,68 @@ import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import jakarta.servlet.http.HttpServletResponse;
-import ua.zorii.helsiPet.entity.Animal;
+import ua.zorii.helsiPet.dto.HistoryCombinedDTO;
 
 import java.awt.*;
 import java.io.IOException;
-
-import static com.lowagie.text.pdf.BaseFont.IDENTITY_H;
+import java.util.List;
 
 public class PDFExporter {
-    private Animal animal;
+    private final List<HistoryCombinedDTO> historyCombinedDTOList;
 
-    public PDFExporter(Animal animal) {
-        this.animal = animal;
+    public PDFExporter(List<HistoryCombinedDTO> historyCombinedDTOList) {
+        this.historyCombinedDTOList = historyCombinedDTOList;
     }
 
-    private void writeTableHeader(PdfPTable table) {
-        PdfPCell cell = new PdfPCell();
-        cell.setBackgroundColor(Color.BLUE);
-        cell.setPadding(5);
-
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
-        font.setColor(Color.WHITE);
-
-        cell.setPhrase(new Phrase("Animal ID", font));
-
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Name", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Breed", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Sex", font));
-        table.addCell(cell);
-
-        cell.setPhrase(new Phrase("Details", font));
-        table.addCell(cell);
-    }
-
-    private void writeTableData(PdfPTable table) {
+    private void writeTextData(Document document) {
         FontFactory.register("c:\\windows\\fonts\\arial.ttf");
         Font font = FontFactory.getFont("arial",  "windows-1251");
+        font.setSize(14);
+        font.setColor(Color.BLACK);
 
-        table.addCell(new Phrase(String.valueOf(animal.getId()), font));
-        table.addCell(new Phrase(animal.getName(), font));
-        table.addCell(new Phrase(animal.getBreed(), font));
-        table.addCell(new Phrase(animal.getSex().toString(), font));
-        table.addCell(new Phrase(animal.getDetails(), font));
+        Paragraph p = new Paragraph("Історія хворіб", font);
+        p.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(p);
+
+        for (HistoryCombinedDTO historyCombinedDTO : historyCombinedDTOList) {
+            final Paragraph data = new Paragraph("Дані про власника та лікаря", font);
+            data.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(data);
+            document.add(new Paragraph("ПІБ власника: " + historyCombinedDTO.getOwnerFirstName() + " " + historyCombinedDTO.getOwnerLastName(), font));
+            document.add(new Paragraph("Електронна пошта власника: " + historyCombinedDTO.getOwnerEmail(), font));
+            document.add(new Paragraph("ПІБ ветеринара: " + historyCombinedDTO.getVetFirstName() + " " + historyCombinedDTO.getVetLastName(), font));
+            document.add(new Paragraph("Електронна пошта ветеринара: " + historyCombinedDTO.getVetEmail(), font));
+            final Paragraph petData = new Paragraph("Дані про тварину", font);
+            petData.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(petData);
+            document.add(new Paragraph("Кличка тварини: " + historyCombinedDTO.getPetName(), font));
+            document.add(new Paragraph("Порода тварини: " + historyCombinedDTO.getPetBreed(), font));
+            document.add(new Paragraph("Вік тварини: " + historyCombinedDTO.getPetAge(), font));
+            document.add(new Paragraph("Стать тварини: " + historyCombinedDTO.getPetSex(), font));
+            document.add(new Paragraph("Розмір тварини: " + historyCombinedDTO.getPetSize(), font));
+            document.add(new Paragraph("Стерилізація тварини: " + (historyCombinedDTO.getPetSterilized().equals("1") ? "ТАК" : "НІ"), font));
+            document.add(new Paragraph("Тип тварини: " + historyCombinedDTO.getPetType(), font));
+            document.add(new Paragraph("Унікальний ідентифікатор тварини: " + historyCombinedDTO.getPetUniqueId(), font));
+            document.add(new Paragraph("Вага тварини: " + historyCombinedDTO.getPetWeight() + " кг.", font));
+            document.add(new Paragraph("Важливі деталі про тварину: " + historyCombinedDTO.getAnimalDetails(), font));
+            final Paragraph otherData = new Paragraph("Дані про проведення", font);
+            otherData.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(otherData);
+            document.add(new Paragraph("Деталі при заповненні форми: " + historyCombinedDTO.getAppointmentDetails(), font));
+            document.add(new Paragraph("Назва клініки: " + historyCombinedDTO.getReceiptClinicName(), font));
+            document.add(new Paragraph("Дата та час прийому:" + historyCombinedDTO.getVetAvailableDate(), font));
+            final Paragraph receiptData = new Paragraph("Дані про лікування", font);
+            receiptData.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(receiptData);
+            document.add(new Paragraph("Призначенні ліки: " + historyCombinedDTO.getReceiptDrugName(), font));
+            document.add(new Paragraph("Рекомендації щодо вживання ліків: " + historyCombinedDTO.getReceiptDrugCount(), font));
+            document.add(new Paragraph("Дата та час призначення рецепту: " + historyCombinedDTO.getReceiptDateStart(), font));
+            document.add(new Paragraph("Дата та час завершення дії рецепту: " + historyCombinedDTO.getReceiptDateEnd(), font));
+            document.add(new Paragraph("Деталі рецепту: " + historyCombinedDTO.getReceiptDetails(), font));
+            document.add(new Paragraph("------------------------------------------------------------------", font));
+        }
     }
 
     public void export(HttpServletResponse response) throws DocumentException, IOException {
@@ -67,27 +75,9 @@ public class PDFExporter {
         PdfWriter.getInstance(document, response.getOutputStream());
 
         document.open();
-        FontFactory.register("c:\\windows\\fonts\\arial.ttf");
-        Font font = FontFactory.getFont("arial",  "windows-1251");
-        font.setSize(18);
-        font.setColor(Color.BLACK);
 
-        Paragraph p = new Paragraph("Історія хворіб", font);
-        p.setAlignment(Paragraph.ALIGN_CENTER);
-
-        document.add(p);
-
-        PdfPTable table = new PdfPTable(5);
-        table.setWidthPercentage(100f);
-        table.setWidths(new float[]{1.5f, 3.5f, 3.0f, 3.0f, 1.5f});
-        table.setSpacingBefore(10);
-
-        writeTableHeader(table);
-        writeTableData(table);
-
-        document.add(table);
+        writeTextData(document);
 
         document.close();
-
     }
 }
